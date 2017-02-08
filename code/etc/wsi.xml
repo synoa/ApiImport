@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+  xmlns:typens="urn:Magento"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+  name="Magento"
+  targetNamespace="urn:Magento">
+    <wsdl:types>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:Magento">
+            <xsd:complexType name="apiImportImportEntitiesResultArray">
+              <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="complexObjectArray" type="xsd:int"/>
+              </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="apiImportImportEntitiesArray">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="complexObjectArray" type="typens:associativeArray"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="apiImportImportEntitiesRequestParam">
+                <xsd:sequence>
+                  <xsd:element name="sessionId" type="xsd:string"/>
+                  <xsd:element name="entities" type="typens:apiImportImportEntitiesArray" />
+                  <xsd:element name="entityType" type="xsd:string" />
+                  <xsd:element name="behaviour" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="apiImportImportEntitiesResponseParam">
+                <xsd:sequence>
+                  <xsd:element name="result" type="typens:apiImportImportEntitiesResultArray" />
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="apiImportImportEntitiesRequest">
+        <wsdl:part name="parameters" type="typens:apiImportImportEntitiesRequestParam"/>
+    </wsdl:message>
+    <wsdl:message name="apiImportImportEntitiesResponse">
+        <wsdl:part name="parameters" type="typens:apiImportImportEntitiesResponseParam"/>
+    </wsdl:message>
+
+    <wsdl:portType name="{{var wsdl.handler}}PortType">
+        <wsdl:operation name="apiImportImportEntities">
+            <wsdl:documentation>Import entities</wsdl:documentation>
+            <wsdl:input message="typens:apiImportImportEntitiesRequest" />
+            <wsdl:output message="typens:apiImportImportEntitiesResponse" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="{{var wsdl.handler}}Binding" type="typens:{{var wsdl.handler}}PortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="apiImportImportEntities">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+</wsdl:definitions>

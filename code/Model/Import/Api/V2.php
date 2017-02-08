@@ -25,8 +25,19 @@ class Danslo_ApiImport_Model_Import_Api_V2 extends Danslo_ApiImport_Model_Import
      */
     public function importEntities($entities, $entityType = null, $behavior = null)
     {
+        if (property_exists($entities[0], 'complexObjectArray')) {
+            $entities = $this->convertToArray($entities);
+        }
         $entities = $this->_prepareEntities($entities);
         return parent::importEntities($entities, $entityType, $behavior);
+    }
+
+    protected function convertToArray($entities) {
+      $result = array();
+      foreach ($entities as $item) {
+        $result[] = $item->complexObjectArray;
+      }
+      return $result;
     }
 
     /**
