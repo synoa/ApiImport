@@ -24,7 +24,7 @@
                   <xsd:element name="sessionId" type="xsd:string"/>
                   <xsd:element name="entities" type="typens:apiImportImportEntitiesArray" />
                   <xsd:element name="entityType" type="xsd:string" />
-                  <xsd:element name="behaviour" type="xsd:string" />
+                  <xsd:element name="behavior" type="xsd:string" />
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="apiImportImportEntitiesResponseParam">
