@@ -245,10 +245,21 @@ class Danslo_ApiImport_Model_Import_Entity_Category
                 }
             }
 
-            if ($idToDelete) {
+            $idsToDelete = array();
+
+            foreach ($idToDelete as $id) {
+              $parent = Mage::getModel('catalog/category')->load($id);
+
+              $children = $parent->getAllChildren(true);
+
+              // Note: get all Children delivers also the id of parent
+              $idsToDelete = array_merge($idsToDelete, $parent->getAllChildren(true));
+            }
+
+            if ($idsToDelete) {
                 $this->_connection->query(
                     $this->_connection->quoteInto(
-                        "DELETE FROM `{$this->_getEntityTable()}` WHERE `entity_id` IN (?)", $idToDelete
+                        "DELETE FROM `{$this->_getEntityTable()}` WHERE `entity_id` IN (?)", $idsToDelete
                     )
                 );
             }
