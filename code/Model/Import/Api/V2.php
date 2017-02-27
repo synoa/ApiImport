@@ -56,7 +56,16 @@ class Danslo_ApiImport_Model_Import_Api_V2 extends Danslo_ApiImport_Model_Import
                 if (is_numeric($j)) {
                     $value = $object->value;
                     // Nullify empty values
+                    /*
+                    Code before was:
+
                     if (!trim($value)) {
+
+                    This is not working if we provide a value like (int) 0
+
+                    This will be nullified but it is a valid value for tax class e.g.
+                     */
+                    if (strlen(trim($value)) == 0) {
                         $value = NULL;
                     }
                     $return[$i][$object->key] = $value;
