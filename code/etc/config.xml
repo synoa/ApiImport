@@ -9,6 +9,13 @@
             <api_import_resource>
                 <class>Danslo_ApiImport_Model_Resource</class>
             </api_import_resource>
+
+            <importexport>
+                <rewrite>
+                  <import_entity_product_type_configurable>Danslo_ApiImport_Model_Rewrite_ImportExport_Import_Entity_Product_Type_Configurable</import_entity_product_type_configurable>
+                </rewrite>
+            </importexport>
+
         </models>
         <events>
             <api_import_entity_product_before_import>
