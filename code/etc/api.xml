@@ -19,6 +19,12 @@
                     <importAttributeAssociations translate="title" module="api_import">
                         <title>Import attribute associations</title>
                     </importAttributeAssociations>
+                    <updateStoreViewLabelForAttributeOption translate="title" module="api_import">
+                      <title>Update a store view label for a Attribute Option</title>
+                    </updateStoreViewLabelForAttributeOption>
+                    <deleteAttributeOptionByAdminLabel translate="title" module="api_import">
+                      <title>Remove a attribute option by adminlabel</title>
+                    </deleteAttributeOptionByAdminLabel>
                 </methods>
                 <faults module="api_import">
                     <invalid_entity_type>
@@ -33,6 +39,12 @@
                         <code>102</code>
                         <message>Import failed. Please see message for more information.</message>
                     </import_failed>
+                    <updateStoreViewLabelForAttributeOption_fault>
+                      <code>103</code>
+                    </updateStoreViewLabelForAttributeOption_fault>
+                    <deleteAttributeOptionByAdminLabel_fault>
+                      <code>104</code>
+                    </deleteAttributeOptionByAdminLabel_fault>
                 </faults>
             </import>
         </resources>
@@ -58,6 +70,12 @@
                     <importAttributeAssociations translate="title" module="api_import">
                         <title>Import attribute associations</title>
                     </importAttributeAssociations>
+                    <updateStoreViewLabelForAttributeOption translate="title" module="api_import">
+                        <title>Update a store view label for a Attribute Option</title>
+                    </updateStoreViewLabelForAttributeOption>
+                    <deleteAttributeOptionByAdminLabel translate="title" module="api_import">
+                        <title>Remove a attribute option by adminlabel</title>
+                    </deleteAttributeOptionByAdminLabel>
                 </api_import>
             </resources>
         </acl>

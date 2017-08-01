@@ -40,6 +40,81 @@ class Danslo_ApiImport_Model_Import_Api_V2 extends Danslo_ApiImport_Model_Import
       return $result;
     }
 
+    public function updateStoreViewLabelForAttributeOption($attributeCode, $adminLabel, $storeView, $storeViewLabel) {
+      $attributeId = Mage::getModel('eav/config')->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode)->getId();
+
+      if ($attributeId == null) {
+        $this->_fault('updateStoreViewLabelForAttributeOption_fault', 'No attribute found with code: ' . $attributeCode);
+      }
+
+      $attributeEavModel = Mage::getModel('catalog/resource_eav_attribute')->load($attributeId);
+
+      if (!$attributeEavModel->usesSource()) {
+          $this->_fault('updateStoreViewLabelForAttributeOption_fault', 'The attribute "' . $attributeCode . '" is not using a source');
+      }
+
+      $optionId = $attributeEavModel->getSource()->getOptionId($adminLabel);
+
+      if ($optionId == null) {
+        $this->_fault('updateStoreViewLabelForAttributeOption_fault', 'No option found with admin label: ' . $adminLabel);
+      }
+
+      $storeViewId = Mage::getModel('core/store')->load($storeView, 'code')->getId();
+
+      if ($storeViewId == null) {
+        $this->_fault('updateStoreViewLabelForAttributeOption_fault', 'No store view found with code: ' . $storeView);
+      }
+
+      $options = array(
+        'value' => array(
+          $optionId => array(
+            '0' => $adminLabel,              // same value as before in admin store view
+            $storeViewId => $storeViewLabel  // The translated value
+          )
+        )
+      );
+
+      $attributeEavModel->setOption($options);
+      $attributeEavModel->save();
+
+      return 'Label "' . $storeViewLabel . '" was set for store view "' . $storeView . '" for attribute "' . $attributeCode . '" where option admin label is "' . $adminLabel . '"';
+    }
+
+    public function deleteAttributeOptionByAdminLabel($attributeCode, $adminLabel) {
+      $attributeId = Mage::getModel('eav/config')->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode)->getId();
+
+      if ($attributeId == null) {
+        $this->_fault('deleteAttributeOptionByAdminLabel_fault', 'No attribute found with code: ' . $attributeCode);
+      }
+
+      $attributeEavModel = Mage::getModel('catalog/resource_eav_attribute')->load($attributeId);
+
+      if (!$attributeEavModel->usesSource()) {
+          $this->_fault('deleteAttributeOptionByAdminLabel_fault', 'The attribute "' . $attributeCode . '" is not using a source');
+      }
+
+      $optionId = $attributeEavModel->getSource()->getOptionId($adminLabel);
+
+      if ($optionId == null) {
+        $this->_fault('deleteAttributeOptionByAdminLabel_fault', 'No option found with admin label: ' . $adminLabel);
+      }
+
+      $options = array(
+        'value' => array(
+          $optionId => array(
+            '0' => $adminLabel,
+          )
+        ),
+        'delete' => array(
+          $optionId => 1
+        ),
+      );
+
+      $attributeEavModel->setOption($options);
+      $attributeEavModel->save();
+      return 'Attribute Option with admin label "' . $adminLabel . '" was deleted in Attribute with attribute code: "' . $attributeCode .'"';
+    }
+
     /**
      * Prepare incoming entities encoded as complexType apiImportImportEntitiesArray
      * for passthru to API V1 as associative array
