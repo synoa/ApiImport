@@ -41,6 +41,7 @@ class Danslo_ApiImport_Model_Import_Api_V2 extends Danslo_ApiImport_Model_Import
     }
 
     public function updateStoreViewLabelForAttributeOption($attributeCode, $adminLabel, $storeView, $storeViewLabel) {
+
       $attributeId = Mage::getModel('eav/config')->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeCode)->getId();
 
       if ($attributeId == null) {
@@ -65,12 +66,16 @@ class Danslo_ApiImport_Model_Import_Api_V2 extends Danslo_ApiImport_Model_Import
         $this->_fault('updateStoreViewLabelForAttributeOption_fault', 'No store view found with code: ' . $storeView);
       }
 
+      $oldLabels = Mage::helper('api_import')->getAllTranslationsForAnAttributeOption($attributeId, $optionId, $adminLabel);
+
+      $newLabels = array(
+        '0' => $adminLabel,              // same value as before in admin store view
+        $storeViewId => $storeViewLabel  // The translated value
+      );
+
       $options = array(
         'value' => array(
-          $optionId => array(
-            '0' => $adminLabel,              // same value as before in admin store view
-            $storeViewId => $storeViewLabel  // The translated value
-          )
+          $optionId => array_replace($oldLabels, $newLabels)
         )
       );
 

@@ -16,7 +16,33 @@
 */
 
 class Danslo_ApiImport_Helper_Data
-    extends Mage_Core_Helper_Abstract
-{
+    extends Mage_Core_Helper_Abstract {
 
+      public function getAllTranslationsForAnAttributeOption($attributeId, $optionId, $adminLabel) {
+        $result = array();
+
+        $storeViews = Mage::app()->getStores();
+
+        $allOptionsInAllStoreViews = array();
+        foreach ($storeViews as $storeView) {
+          $allOptionsInAllStoreViews[$storeView->getId()] = Mage::getResourceModel('eav/entity_attribute_option_collection')
+            ->setAttributeFilter($attributeId)
+            ->setStoreFilter($storeView->getId())
+            ->load()
+            ->toOptionArray()
+          ;
+        }
+
+        foreach ($allOptionsInAllStoreViews as $storeViewId=>$storeViewOptions) {
+          foreach ($storeViewOptions as $storeViewOption) {
+            if ($storeViewOption['value'] == $optionId) {
+              if ($storeViewOption['label'] != $adminLabel) {
+                $result[$storeViewId] = $storeViewOption['label'];
+              }
+            }
+          }
+        }
+
+        return $result;
+      }
 }
