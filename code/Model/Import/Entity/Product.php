@@ -126,6 +126,10 @@ class Danslo_ApiImport_Model_Import_Entity_Product
 
             $options = array();
             foreach ($this->_dataSourceModel->getEntities() as $rowData) {
+                // do not create value ###EMPTY###
+                if ($rowData[$attributeCode] == '###EMPTY###'){
+                  continue;
+                }
                 if (isset($rowData[$attributeCode]) && strlen(trim($rowData[$attributeCode]))) {
                     $optionExists = false;
                     foreach ($sourceOptions as $sourceOption) {
@@ -318,5 +322,59 @@ class Danslo_ApiImport_Model_Import_Entity_Product
             }
         }
         return $this->_fileUploader;
+    }
+
+    /*
+     * Overwrite to enable import ###EMPTY### value for select and multi select
+     */
+    public function isAttributeValid($attrCode, array $attrParams, array $rowData, $rowNum)
+    {
+      Mage::log('Here i am', null, 'test.log', true);
+        switch ($attrParams['type']) {
+            case 'varchar':
+                $val   = Mage::helper('core/string')->cleanString($rowData[$attrCode]);
+                $valid = Mage::helper('core/string')->strlen($val) < self::DB_MAX_VARCHAR_LENGTH;
+                break;
+            case 'decimal':
+                $val   = trim($rowData[$attrCode]);
+                $valid = (float)$val == $val;
+                break;
+            case 'select':
+            case 'multiselect':
+                // Overwrite begin
+                $valid = ($rowData[$attrCode] == '###EMPTY###') ? true : isset($attrParams['options'][strtolower($rowData[$attrCode])]);
+                // Overwrite end
+                //
+                // orig code:
+                // $valid = isset($attrParams['options'][strtolower($rowData[$attrCode])]);
+                break;
+            case 'int':
+                $val   = trim($rowData[$attrCode]);
+                $valid = (int)$val == $val;
+                break;
+            case 'datetime':
+                $val   = trim($rowData[$attrCode]);
+                $valid = strtotime($val) !== false
+                    || preg_match('/^\d{2}.\d{2}.\d{2,4}(?:\s+\d{1,2}.\d{1,2}(?:.\d{1,2})?)?$/', $val);
+                break;
+            case 'text':
+                $val   = Mage::helper('core/string')->cleanString($rowData[$attrCode]);
+                $valid = Mage::helper('core/string')->strlen($val) < self::DB_MAX_TEXT_LENGTH;
+                break;
+            default:
+                $valid = true;
+                break;
+        }
+
+        if (!$valid) {
+            $this->addRowError(Mage::helper('importexport')->__("Invalid value for '%s'"), $rowNum, $attrCode);
+        } elseif (!empty($attrParams['is_unique'])) {
+            if (isset($this->_uniqueAttributes[$attrCode][$rowData[$attrCode]])) {
+                $this->addRowError(Mage::helper('importexport')->__("Duplicate Unique Attribute for '%s'"), $rowNum, $attrCode);
+                return false;
+            }
+            $this->_uniqueAttributes[$attrCode][$rowData[$attrCode]] = true;
+        }
+        return (bool) $valid;
     }
 }
