@@ -762,7 +762,9 @@ class Danslo_ApiImport_Model_Import_Entity_Category
                 return false;
             }
         } else {
-            return reset($this->_categoriesWithRoots[$rowData[self::COL_ROOT]]);
+          // Bugfix the category with id "" could be on a other position
+          return $this->_categoriesWithRoots[$rowData[self::COL_ROOT]][""];
+          // return reset($this->_categoriesWithRoots[$rowData[self::COL_ROOT]]);
         }
     }
 
