@@ -329,7 +329,6 @@ class Danslo_ApiImport_Model_Import_Entity_Product
      */
     public function isAttributeValid($attrCode, array $attrParams, array $rowData, $rowNum)
     {
-      Mage::log('Here i am', null, 'test.log', true);
         switch ($attrParams['type']) {
             case 'varchar':
                 $val   = Mage::helper('core/string')->cleanString($rowData[$attrCode]);
